@@ -12,6 +12,8 @@ import Foundation
 class MoviesController {
   
   var moviesListsItems: [MovieListItem] = []
+  var genres: [Genre] = []
+  var selectedGenre: Genre? = nil
   let tmdbClient = TMDbClient(apiKey: "b5d8017e240d54c376f083183218e549")
   
   func fetchMoviesListsItems() async {
@@ -30,6 +32,14 @@ class MoviesController {
     } catch{
       print(error)
       return nil
+    }
+  }
+  
+  func fetchMoviesGenres() async {
+    do {
+      self.genres = try await tmdbClient.genres.movieGenres(language: "fr")
+    } catch {
+      print(error)
     }
   }
 }
