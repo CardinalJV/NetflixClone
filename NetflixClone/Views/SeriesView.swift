@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SeriesView: View {
   
-  let seriesController = SeriesController()
+  let seriesController: SeriesController
   
   var body: some View {
     VStack{
@@ -17,21 +17,21 @@ struct SeriesView: View {
         if !self.seriesController.tvSeriesListsItems.isEmpty {
           LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10),GridItem(.flexible(), spacing: 10)], spacing: 12.5){
             ForEach(self.seriesController.tvSeriesListsItems) { tvSerie in
-              ImageLoader(imageUrl: tvSerie.posterPath!)
-                .scaledToFit()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 112.5)
+              VStack{
+                ImageLoader(imageUrl: tvSerie.posterPath!)
+                  .scaledToFit()
+                  .aspectRatio(contentMode: .fit)
+                  .frame(width: 112.5)
+              }
+              .clipShape(RoundedRectangle(cornerRadius: 5))
             }
           }
         }
       }
     }
-    .task {
-      await self.seriesController.fetchTVSeriesListsItems()
-    }
   }
 }
 
-#Preview {
-  SeriesView()
-}
+//#Preview {
+//  SeriesView()
+//}

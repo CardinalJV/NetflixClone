@@ -8,11 +8,30 @@
 import SwiftUI
 
 struct MoviesView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+  
+  let moviesController: MoviesController
+  
+  var body: some View {
+    VStack{
+      ScrollView{
+        if !self.moviesController.moviesListsItems.isEmpty {
+          LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10),GridItem(.flexible(), spacing: 10)], spacing: 12.5){
+            ForEach(self.moviesController.moviesListsItems) { movie in
+              VStack{
+                ImageLoader(imageUrl: movie.posterPath!)
+                  .scaledToFit()
+                  .aspectRatio(contentMode: .fit)
+                  .frame(width: 112.5)
+              }
+              .clipShape(RoundedRectangle(cornerRadius: 5))
+            }
+          }
+        }
+      }
     }
+  }
 }
-
-#Preview {
-    MoviesView()
-}
+//
+//#Preview {
+//    MoviesView()
+//}
