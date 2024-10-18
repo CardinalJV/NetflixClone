@@ -20,7 +20,8 @@ struct Poster: View {
           .scaledToFit()
         .overlay(alignment: .topLeading){
           if self.movie!.productionCompanies!.contains(where: {$0.name == "Netflix"}) {
-            Image("AppIcon")
+            Image("AppImage")
+              .resizable()
               .frame(width: 25, height: 25)
           }
         }

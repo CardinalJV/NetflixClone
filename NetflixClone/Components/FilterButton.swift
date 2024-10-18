@@ -9,16 +9,19 @@ import SwiftUI
 
 struct FilterButton: View {
   
-  @Binding var showSeriesView: Bool
-    //  @Binding var showMoviesView: Bool
-    //  @Binding var showSeriesView: Bool
+  let moviesController: MoviesController
   
+  @Binding var showSeriesView: Bool
+  @Binding var showMoviesView: Bool
+  @Binding var showPicker: Bool
   
   var body: some View {
     HStack{
-      if self.showSeriesView {
+      /* Delete button */
+      if self.showSeriesView || self.showMoviesView {
         Button {
           self.showSeriesView = false
+          self.showMoviesView = false
         } label: {
           Image(systemName: "xmark")
             .font(.subheadline)
@@ -26,34 +29,71 @@ struct FilterButton: View {
             .padding(7)
             .background(
               RoundedRectangle(cornerRadius: 25)
-                .stroke(Color.gray, lineWidth: 1) // Bordure blanche
+                .stroke(Color.gray, lineWidth: 1)
             )
         }
+        .transition(.asymmetric(insertion: .slide, removal: .scale))
       }
-      Button {
-        if self.showSeriesView == true {
-          self.showSeriesView = false
-        } else {
-          self.showSeriesView = true
+      /* - */
+      /* Series button */
+      if !self.showMoviesView {
+        Button {
+          if self.showSeriesView {
+            self.showSeriesView = false
+          } else {
+            self.showSeriesView = true
+          }
+        } label: {
+          Text("Series")
+            .font(.subheadline)
+            .foregroundColor(.white)
+            .padding(.init(top: 5, leading: 10, bottom: 5, trailing: 10))
+            .background(
+              ZStack {
+                RoundedRectangle(cornerRadius: 25)
+                  .fill(self.showSeriesView ? Color.white.opacity(0.2) : Color.clear)
+                RoundedRectangle(cornerRadius: 25)
+                  .stroke(Color.gray, lineWidth: 1)
+              }
+            )
         }
-      } label: {
-        Text("Series")
-          .font(.subheadline)
-          .foregroundColor(.white)
-          .padding(.init(top: 5, leading: 10, bottom: 5, trailing: 10))
-          .background(
-            ZStack {
-              RoundedRectangle(cornerRadius: 25)
-                .fill(self.showSeriesView ? Color.white.opacity(0.2) : Color.clear)
-              RoundedRectangle(cornerRadius: 25)
-                .stroke(Color.gray, lineWidth: 1)
-            }
-          )
+        .transition(.asymmetric(insertion: .slide, removal: .scale))
       }
-      Button {
-        print("Films")
-      } label: {
-        Text("Films")
+      /* - */
+      /* Movies button */
+      if !self.showSeriesView {
+        Button {
+          if self.showMoviesView {
+            self.showMoviesView = false
+          } else {
+            self.showMoviesView = true
+          }
+        } label: {
+          Text("Films")
+            .font(.subheadline)
+            .foregroundColor(.white)
+            .padding(.init(top: 5, leading: 10, bottom: 5, trailing: 10))
+            .background(
+              ZStack {
+                RoundedRectangle(cornerRadius: 25)
+                  .fill(self.showMoviesView ? Color.white.opacity(0.2) : Color.clear)
+                RoundedRectangle(cornerRadius: 25)
+                  .stroke(Color.gray, lineWidth: 1)
+              }
+            )
+        }
+        .transition(.asymmetric(insertion: .slide, removal: .scale))
+      }
+      /* - */
+      /* Picker de catégories */
+      if self.showSeriesView || self.showMoviesView {
+        Button(action: {
+          self.showPicker = true
+        }, label: {
+          HStack {
+            Text("Catégories")
+            Image(systemName: "chevron.down")
+          }
           .font(.subheadline)
           .foregroundColor(.white)
           .padding(.init(top: 5, leading: 10, bottom: 5, trailing: 10))
@@ -61,24 +101,13 @@ struct FilterButton: View {
             RoundedRectangle(cornerRadius: 25)
               .stroke(Color.gray, lineWidth: 1)
           )
+        })
+        .transition(.asymmetric(insertion: .slide, removal: .scale))
       }
-      Button {
-        print("Categories")
-      } label: {
-        HStack {
-          Text("Catégories")
-          Image(systemName: "chevron.down")
-        }
-        .font(.subheadline)
-        .foregroundColor(.white)
-        .padding(.init(top: 5, leading: 10, bottom: 5, trailing: 10))
-        .background(
-          RoundedRectangle(cornerRadius: 25)
-            .stroke(Color.gray, lineWidth: 1)
-        )
-      }
+      /* - */
       Spacer()
     }
+    .animation(.bouncy(duration: 0.5), value: self.showSeriesView || self.showMoviesView)
   }
 }
 
