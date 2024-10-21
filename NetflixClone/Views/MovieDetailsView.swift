@@ -6,13 +6,27 @@
 //
 
 import SwiftUI
+import TMDb
 
 struct MovieDetailsView: View {
+  
+  let movieController: MoviesController
+  
+  let movieListItem: MovieListItem
+  @State var movie: Movie? = nil
+  
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+      VStack{
+        if self.movie != nil {
+          Text(self.movie!.title)
+        }
+      }
+      .task {
+        self.movie = await self.movieController.fetchMovie(byId: self.movieListItem.id)
+      }
     }
 }
 
-#Preview {
-    MovieDetailsView()
-}
+//#Preview {
+//    MovieDetailsView()
+//}
