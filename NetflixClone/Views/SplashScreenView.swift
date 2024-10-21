@@ -23,7 +23,6 @@ struct SplashScreenView: View {
         LinearGradient(gradient: Gradient(colors: [Color.black, Color(red: 44/255, green: 44/255, blue: 44/255)]),
                        startPoint: .bottom, endPoint: .top)
         .ignoresSafeArea()
-        if !self.showPicker {
           /* Main component */
           ScrollView{
             VStack{
@@ -41,7 +40,8 @@ struct SplashScreenView: View {
                 }
                 .task{
                   if self.moviesController.moviesListsItems.isEmpty {
-                    await self.moviesController.fetchMoviesListsItems()
+                    await self.moviesController.fetchMoviesListsItems(page: 1)
+                    await self.moviesController.fetchMoviesListsItems(page: 2)
                     await self.moviesController.fetchMoviesGenres()
                     self.movie = await self.moviesController.fetchMovie(byId: moviesController.moviesListsItems.randomElement()!.id)!
                   }
@@ -53,9 +53,10 @@ struct SplashScreenView: View {
             }
             .padding()
           }
+          .toolbar(self.showPicker ? .hidden : .visible)
           .toolbar{
             ToolbarItem(placement: .topBarLeading) {
-              Text("For Jessy")
+              Text("For You")
                 .bold()
                 .font(.title2)
                 .foregroundStyle(.white)
@@ -73,23 +74,41 @@ struct SplashScreenView: View {
           }
           .toolbarBackground(Color(red: 40/255, green: 40/255, blue: 40/255).opacity(0.75), for: .navigationBar)
           /* - */
-        } else {
+        if self.showPicker {
           /* Picker de catégories */
-          ScrollView{
-            Color.gray.opacity(0.2)
+          ZStack{
+            Color.black.opacity(0.95)
               .ignoresSafeArea(.all)
-            VStack{
-              ForEach(self.moviesController.genres) { genre in
-                Button {
-                  self.moviesController.selectedGenre = genre
-                } label: {
-                  Text(genre.name)
+            ScrollView{
+              VStack(spacing: 10){
+                ForEach(self.moviesController.genres) { genre in
+                  Button {
+                    self.moviesController.selectedGenre = genre
+                    self.showPicker = false
+                  } label: {
+                    Text(genre.name)
+                      .foregroundStyle(.gray)
+                      .bold()
+                      .padding(10)
+                    Spacer()
+                  }
                 }
               }
+              .padding()
             }
-            .background(Color.black.opacity(0.4))
-          /* - */
           }
+          .overlay(alignment: .bottom){
+            Button {
+              self.showPicker = false
+            } label: {
+              Image(systemName: "xmark")
+                .padding(15)
+                .foregroundStyle(.black)
+                .background(.white)
+                .clipShape(.circle)
+            }
+          }
+          /* - */
         }
       }
     }
