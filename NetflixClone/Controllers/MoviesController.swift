@@ -1,9 +1,9 @@
-//
-//  MoviesController.swift
-//  NetflixClone
-//
-//  Created by Jessy Viranaiken on 16/10/2024.
-//
+  //
+  //  MoviesController.swift
+  //  NetflixClone
+  //
+  //  Created by Jessy Viranaiken on 16/10/2024.
+  //
 
 import TMDb
 import Foundation
@@ -14,11 +14,15 @@ class MoviesController {
   var moviesListsItems: [MovieListItem] = []
   var genres: [Genre] = []
   var selectedGenre: Genre? = nil
+  var selectedMovie: Movie? = nil
   let tmdbClient = TMDbClient(apiKey: "b5d8017e240d54c376f083183218e549")
   
-  func fetchMoviesListsItems() async {
+  func fetchMoviesListsItems(page: Int) async {
     do {
-      self.moviesListsItems = try await tmdbClient.discover.movies().results
+      if self.moviesListsItems.isEmpty {
+        self.moviesListsItems = try await tmdbClient.discover.movies(page: page).results
+      }
+      self.moviesListsItems.append(contentsOf: try await tmdbClient.discover.movies(page: page).results)
       print(self.moviesListsItems.count)
     } catch {
       print(error)
@@ -42,4 +46,13 @@ class MoviesController {
       print(error)
     }
   }
+  
+  func sortByGenre() -> [MovieListItem]? {
+    guard self.selectedGenre != nil else {
+      print("Catégories non selectionner")
+      return nil
+    }
+    return self.moviesListsItems.filter{ $0.genreIDs[0] == self.selectedGenre!.id }
+  }
+  
 }
