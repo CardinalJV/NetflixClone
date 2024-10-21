@@ -85,13 +85,13 @@ struct FilterButton: View {
         .transition(.asymmetric(insertion: .slide, removal: .scale))
       }
       /* - */
-      /* Picker de catégories */
+      /* Categories Picker */
       if self.showSeriesView || self.showMoviesView {
         Button(action: {
           self.showPicker = true
         }, label: {
           HStack {
-            Text("Catégories")
+            Text(self.moviesController.selectedGenre == nil ? "Catégories" : self.moviesController.selectedGenre!.name)
             Image(systemName: "chevron.down")
           }
           .font(.subheadline)
