@@ -8,14 +8,15 @@
 import SwiftUI
 import TMDb
 
-struct SplashScreenView: View {
+struct LandingView: View {
   
   let moviesController = MoviesController()
   let seriesController = SeriesController()
+  let navigationController = NavigationController()
+  
   @State var showSeriesView = false
   @State var showMoviesView = false
   @State var movie: Movie? = nil
-  @State var showPicker = false
   
   var body: some View {
     NavigationStack{
@@ -26,11 +27,14 @@ struct SplashScreenView: View {
           /* Main component */
           ScrollView{
             VStack{
-              FilterButton(moviesController: self.moviesController, showSeriesView: self.$showSeriesView, showMoviesView: self.$showMoviesView, showPicker: self.$showPicker)
-              if self.showSeriesView {
+              if self.navigationController.showFilterButton {
+                FilterButton(moviesController: self.moviesController, navigationController: self.navigationController, showSeriesView: self.$showSeriesView, showMoviesView: self.$showMoviesView)
+              }
+              
+               if self.showSeriesView {
                 SeriesView(seriesController: self.seriesController)
               } else if self.showMoviesView {
-                MoviesView(moviesController: self.moviesController)
+                MoviesView(moviesController: self.moviesController, navigationController: self.navigationController)
               } else {
                 VStack{
                   if !self.moviesController.moviesListsItems.isEmpty && self.movie != nil {
@@ -50,10 +54,11 @@ struct SplashScreenView: View {
                   }
                 }
               }
+              
             }
             .padding()
           }
-          .toolbar(self.showPicker ? .hidden : .visible)
+          .toolbar(self.navigationController.showToolbar ? .visible : .hidden)
           .toolbar{
             ToolbarItem(placement: .topBarLeading) {
               Text("For You")
@@ -74,7 +79,7 @@ struct SplashScreenView: View {
           }
           .toolbarBackground(Color(red: 40/255, green: 40/255, blue: 40/255).opacity(0.75), for: .navigationBar)
           /* - */
-        if self.showPicker {
+        if self.navigationController.showPicker {
           /* Picker de catégories */
           ZStack{
             Color.black.opacity(0.95)
@@ -84,7 +89,8 @@ struct SplashScreenView: View {
                 ForEach(self.moviesController.genres) { genre in
                   Button {
                     self.moviesController.selectedGenre = genre
-                    self.showPicker = false
+                    self.navigationController.showPicker = false
+                    self.navigationController.showToolbar = true
                   } label: {
                     Text(genre.name)
                       .foregroundStyle(.gray)
@@ -99,7 +105,8 @@ struct SplashScreenView: View {
           }
           .overlay(alignment: .bottom){
             Button {
-              self.showPicker = false
+              self.navigationController.showPicker = false
+              self.navigationController.showToolbar = true
             } label: {
               Image(systemName: "xmark")
                 .padding(15)
@@ -111,10 +118,14 @@ struct SplashScreenView: View {
           /* - */
         }
       }
+      .onAppear {
+        self.navigationController.showToolbar = true
+        self.navigationController.showFilterButton = true
+      }
     }
   }
 }
 
 #Preview {
-  SplashScreenView()
+  LandingView()
 }

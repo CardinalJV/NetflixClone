@@ -6,6 +6,7 @@
   //
 
 import SwiftUI
+import TMDb
 
 struct SeriesView: View {
   
