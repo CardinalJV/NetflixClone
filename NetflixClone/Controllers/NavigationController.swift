@@ -6,3 +6,11 @@
 //
 
 import Foundation
+
+@Observable
+class NavigationController {
+  var showToolbar = false
+  var showPicker = false
+  var showFilterButton = false
+  var showMovieDetailsView = false
+}
