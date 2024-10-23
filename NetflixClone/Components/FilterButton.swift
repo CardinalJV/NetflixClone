@@ -10,18 +10,19 @@ import SwiftUI
 struct FilterButton: View {
   
   let moviesController: MoviesController
+  let navigationController: NavigationController
   
   @Binding var showSeriesView: Bool
   @Binding var showMoviesView: Bool
-  @Binding var showPicker: Bool
   
   var body: some View {
     HStack{
-      /* Delete button */
+      /* Back button */
       if self.showSeriesView || self.showMoviesView {
         Button {
           self.showSeriesView = false
           self.showMoviesView = false
+          self.moviesController.selectedGenre = nil
         } label: {
           Image(systemName: "xmark")
             .font(.subheadline)
@@ -40,6 +41,7 @@ struct FilterButton: View {
         Button {
           if self.showSeriesView {
             self.showSeriesView = false
+            self.moviesController.selectedGenre = nil
           } else {
             self.showSeriesView = true
           }
@@ -65,6 +67,7 @@ struct FilterButton: View {
         Button {
           if self.showMoviesView {
             self.showMoviesView = false
+            self.moviesController.selectedGenre = nil
           } else {
             self.showMoviesView = true
           }
@@ -88,7 +91,8 @@ struct FilterButton: View {
       /* Categories Picker */
       if self.showSeriesView || self.showMoviesView {
         Button(action: {
-          self.showPicker = true
+          self.navigationController.showPicker = true
+          self.navigationController.showToolbar = false
         }, label: {
           HStack {
             Text(self.moviesController.selectedGenre == nil ? "Catégories" : self.moviesController.selectedGenre!.name)
@@ -112,5 +116,5 @@ struct FilterButton: View {
 }
 
 #Preview {
-  SplashScreenView()
+  LandingView()
 }
